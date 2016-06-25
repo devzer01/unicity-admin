@@ -182,7 +182,7 @@ $app->get('/media', function ($request, $response, $args) {
 
     $args = ['activeMedia' => 'active'];
     $args = array_merge(['items' => $items, 'countries' => $countries, 'categories' => $categories], $args);
-    return $this->view->render($response, 'document.twig.html', $args);
+    return $this->view->render($response, 'media.twig.html', $args);
 })->add($authCheck);
 
 
