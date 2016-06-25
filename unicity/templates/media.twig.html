@@ -1,0 +1,51 @@
+{% extends "layout.auth.twig.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block content %}
+
+
+<table class="table table-striped">
+    <tr>
+        <th>Filename</th>
+        <th>Title</th>
+    </tr>
+
+    {% for item in items %}
+    <tr>
+        <td>{{item.filename}}</td>
+        <td>{{item.title}}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<form method="POST" action="/country">
+    <div class="form-group">
+        <label for="inputURL">Title</label>
+        <input type="text" name="title" class="form-control" id="inputURL" placeholder="title">
+    </div>
+    <div class="form-group">
+        <label for="inputCOUNTRY">Country</label>
+        <select name="country_id" id="inputCOUNTRY">
+            {% for country in countries %}
+                <option value="{{ country.id }}">{{country.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="inputCAT">Media Category</label>
+        <select name="document_category_id" id="inputCAT">
+            {% for category in categories %}
+            <option value="{{ category.id }}">{{category.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="inputFILE">Media</label>
+        <input type="file" name="photo" class="form-control" id="inputFILE">
+    </div>
+    <button class="btn btn-sm btn-primary" type="submit">Submit</button>
+</form>
+
+{% endblock %}

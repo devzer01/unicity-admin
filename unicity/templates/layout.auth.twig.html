@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block head %}
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="//code.jquery.com/jquery-3.0.0.min.js"   integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="   crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>{% block title %}{% endblock %} - Unicity Admin</title>
+    {% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Unicity</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="{{ activeDashboard }}"><a href="/dashboard">Summary</a></li>
+            <li class="{{ activeCountry }}"><a href="/country">Country</a></li>
+            <li class="{{ activeDocCat }}"><a href="/document-category">Document Category</a></li>
+            <li class="{{ activeMediaCat }}"><a href="/media-category">Media Category</a></li>
+            <li class="{{ activePhotos }}"><a href="/photos">Photos</a></li>
+            <li class="{{ activeDocuments }}"><a href="/documents">Documents</a></li>
+            <li class="{{ activeMedia }}"><a href="/media">Media</a></li>
+            <li class=""><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+
+
+
+<footer>
+    {% block footer %}
+    &copy; Copyright 2016 Unicity
+    {% endblock %}
+</footer>
+</body>
+</html>

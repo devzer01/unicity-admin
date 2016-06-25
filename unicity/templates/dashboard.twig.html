@@ -1,0 +1,23 @@
+{% extends "layout.auth.twig.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block content %}
+
+<table class="table">
+
+    <tr>
+        <th><a href="/queue">Media Count</a></th>
+        <td>{{ queue }}</td>
+    </tr>
+    <tr>
+        <th><a href="/pending">Documents</a></th>
+        <td>{{ pending }}</td>
+    </tr>
+    <tr>
+        <th><a href="/completed">Photos</a></th>
+        <td>{{ completed }}</td>
+    </tr>
+</table>
+
+{% endblock %}
