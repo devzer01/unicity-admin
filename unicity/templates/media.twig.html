@@ -30,7 +30,7 @@
     <input type="hidden" name="country_id" value="1" />
     <div class="form-group">
         <label for="inputCAT">Media Category</label>
-        <select name="document_category_id" id="inputCAT">
+        <select name="media_category_id" id="inputCAT">
             {% for category in categories %}
             <option value="{{ category.id }}">{{category.name}}</option>
             {% endfor %}
@@ -38,7 +38,7 @@
     </div>
     <div class="form-group">
         <label for="inputFILE">Media</label>
-        <input type="file" name="photo" class="form-control" id="inputFILE">
+        <input type="file" name="media" class="form-control" id="inputFILE">
     </div>
     <button class="btn btn-sm btn-primary" type="submit">Submit</button>
 </form>
