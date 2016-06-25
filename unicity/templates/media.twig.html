@@ -9,12 +9,14 @@
     <tr>
         <th>Filename</th>
         <th>Title</th>
+        <th>Category</th>
     </tr>
 
     {% for item in items %}
     <tr>
         <td>{{item.filename}}</td>
         <td>{{item.title}}</td>
+        <td>{{item.category}}</td>
     </tr>
     {% endfor %}
 
@@ -25,14 +27,7 @@
         <label for="inputURL">Title</label>
         <input type="text" name="title" class="form-control" id="inputURL" placeholder="title">
     </div>
-    <div class="form-group">
-        <label for="inputCOUNTRY">Country</label>
-        <select name="country_id" id="inputCOUNTRY">
-            {% for country in countries %}
-                <option value="{{ country.id }}">{{country.name}}</option>
-            {% endfor %}
-        </select>
-    </div>
+    <input type="hidden" name="country_id" value="1" />
     <div class="form-group">
         <label for="inputCAT">Media Category</label>
         <select name="document_category_id" id="inputCAT">
