@@ -163,10 +163,9 @@ $app->post('/documents', function ($request, $response, $args) {
 
 //media
 $app->get('/media', function ($request, $response, $args) {
-    $stmt = $this->pdo->prepare("SELECT c.name AS country, dc.name AS category, d.filename, d.title, d.checksum "
+    $stmt = $this->pdo->prepare("SELECT dc.name AS category, d.filename, d.title, d.checksum "
         . "FROM media AS d "
-        . "JOIN country AS c ON c.id = d.country_id "
-        . "JOIN document_category AS dc ON dc.id = d.document_category_id ");
+        . "JOIN media_category AS dc ON dc.id = d.document_category_id ");
     $stmt->execute();
     $items = $stmt->fetchAll();
 
