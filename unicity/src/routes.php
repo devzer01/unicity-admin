@@ -113,7 +113,7 @@ $app->post('/photo', function ($request, $response, $args) {
 
     $stmt = $this->pdo->prepare("INSERT INTO photo (filename, title, content, checksum) VALUES (:filename, :title, :content, :checksum)");
     $stmt->execute([':filename' => $filename, ':title' => $title, ':content' => $content, ':checksum' => $checksum]);
-    return $response->withStatus(302)->withHeader('Location', '/photo');
+    return $response->withStatus(302)->withHeader('Location', '/photos');
 })->add($authCheck);
 
 //document
