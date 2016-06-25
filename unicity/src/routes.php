@@ -165,7 +165,7 @@ $app->post('/documents', function ($request, $response, $args) {
 $app->get('/media', function ($request, $response, $args) {
     $stmt = $this->pdo->prepare("SELECT dc.name AS category, d.filename, d.title, d.checksum "
         . "FROM media AS d "
-        . "JOIN media_category AS dc ON dc.id = d.document_category_id ");
+        . "JOIN media_category AS dc ON dc.id = d.media_category_id ");
     $stmt->execute();
     $items = $stmt->fetchAll();
 
@@ -189,6 +189,7 @@ $app->get('/media', function ($request, $response, $args) {
 $app->post('/media', function ($request, $response, $args) {
     $parsedBody = $request->getParsedBody();
     $files = $request->getUploadedFiles();
+
     if (empty($files['media'])) {
         return $response->withStatus(302)->withHeader('Location', '/media');
     }
@@ -198,11 +199,11 @@ $app->post('/media', function ($request, $response, $args) {
     $checksum = md5($content);
     $title = $parsedBody['title'];
 
-    $stmt = $this->pdo->prepare("INSERT INTO media (filename, title, content, checksum, country_id, media_category_id) VALUES (:filename, :title, :content, :checksum, :country, :doccat)");
+    $stmt = $this->pdo->prepare("INSERT INTO media (filename, title, content, checksum, media_category_id) VALUES (:filename, :title, :content, :checksum, :doccat)");
     $stmt->execute([
         ':filename' => $filename, ':title' => $title,
         ':content' => $content, ':checksum' => $checksum,
-        ':country' => $parsedBody['country_id'], ':doccat' => $parsedBody['media_category_id']
+        ':doccat' => $parsedBody['media_category_id']
     ]);
     return $response->withStatus(302)->withHeader('Location', '/media');
 })->add($authCheck);
