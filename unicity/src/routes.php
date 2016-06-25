@@ -106,7 +106,8 @@ $app->post('/photo', function ($request, $response, $args) {
         return $response->withStatus(302)->withHeader('Location', '/photo');
     }
     $filename = $files['photo']->getClientFilename();
-    $content = stream_get_contents($files['photo']->getStream());
+    $stream = $files['photo']->getStream();
+    $content = $stream->read($stream->getSize());
     $checksum = md5($content);
     $title = $parsedBody['title'];
 
