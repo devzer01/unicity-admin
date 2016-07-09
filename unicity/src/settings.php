@@ -8,8 +8,8 @@ return [
             'template_path' => __DIR__ . '/../templates/',
         ],
         'database' => [
-            'dsn' => 'mysql:host=localhost;dbname=unicity',
-            'username' => 'root',
+            'dsn' => 'mysql:host=127.0.0.1;dbname=test',
+            'username' => 'nayan',
             'password' => ''
         ],
 

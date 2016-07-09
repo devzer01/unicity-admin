@@ -11,6 +11,7 @@
         <th>Title</th>
         <th>Category</th>
         <th>Country</th>
+        <th>Delete</th>
     </tr>
 
     {% for item in items %}
@@ -19,6 +20,7 @@
         <td>{{item.title}}</td>
         <td>{{item.category}}</td>
         <td>{{item.country}}</td>
+        <td><a href="/delete_document/{{item.id}}">Delete</a></td>
     </tr>
     {% endfor %}
 

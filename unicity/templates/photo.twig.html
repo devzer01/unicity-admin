@@ -9,12 +9,14 @@
     <tr>
         <th>Filename</th>
         <th>Title</th>
+        <th>Delete</th>
     </tr>
 
     {% for item in items %}
     <tr>
         <td>{{item.filename}}</td>
         <td>{{item.title}}</td>
+        <td><a href="/delete_photo/{{item.id}}">Delete</a></td>
     </tr>
     {% endfor %}
 

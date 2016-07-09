@@ -90,12 +90,35 @@ $app->post('/media-category', function ($request, $response, $args) {
 })->add($authCheck);
 
 $app->get('/photos', function ($request, $response, $args) {
-    $stmt = $this->pdo->prepare("SELECT filename, title, checksum FROM photo");
+    $stmt = $this->pdo->prepare("SELECT id, filename, title, checksum FROM photo");
     $stmt->execute();
     $items = $stmt->fetchAll();
     $args = ['activePhotos' => 'active'];
     $args = array_merge(['items' => $items], $args);
     return $this->view->render($response, 'photo.twig.html', $args);
+})->add($authCheck);
+
+$app->get('/delete_photo/{id}', function ($request, $response, $args) {
+    $id = $request->getAttribute('id');
+    $stmt = $this->pdo->prepare("DELETE FROM photo WHERE id = :id ");
+    $stmt->execute([':id' => $id]);
+    return $response->withStatus(302)->withHeader('Location', '/photos');
+})->add($authCheck);
+
+
+$app->get('/delete_document/{id}', function ($request, $response, $args) {
+    $id = $request->getAttribute('id');
+    $stmt = $this->pdo->prepare("DELETE FROM document WHERE id = :id ");
+    $stmt->execute([':id' => $id]);
+    return $response->withStatus(302)->withHeader('Location', '/documents');
+})->add($authCheck);
+
+
+$app->get('/delete_media/{id}', function ($request, $response, $args) {
+    $id = $request->getAttribute('id');
+    $stmt = $this->pdo->prepare("DELETE FROM media WHERE id = :id ");
+    $stmt->execute([':id' => $id]);
+    return $response->withStatus(302)->withHeader('Location', '/media');
 })->add($authCheck);
 
 
@@ -118,7 +141,7 @@ $app->post('/photo', function ($request, $response, $args) {
 
 //document
 $app->get('/documents', function ($request, $response, $args) {
-    $stmt = $this->pdo->prepare("SELECT c.name AS country, dc.name AS category, d.filename, d.title, d.checksum "
+    $stmt = $this->pdo->prepare("SELECT d.id, c.name AS country, dc.name AS category, d.filename, d.title, d.checksum "
        . "FROM document AS d "
        . "JOIN country AS c ON c.id = d.country_id "
        . "JOIN document_category AS dc ON dc.id = d.document_category_id ");
@@ -138,6 +161,95 @@ $app->get('/documents', function ($request, $response, $args) {
     $args = ['activeDocuments' => 'active', 'items' => $items, 'countries' => $countries, 'categories' => $categories];
     return $this->view->render($response, 'document.twig.html', $args);
 })->add($authCheck);
+
+$app->post("/getImagesSince", function ($request, $response, $args) {
+    $parsedBody = $request->getParsedBody();
+    $sql = "SELECT id, title, checksum FROM photo WHERE UNIX_TIMESTAMP(created) > :created";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([':created' => $parsedBody['lastUpdate']]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $result = ['status' => 0, 'rows' => count($rows), 'result' => $rows ];
+    return $response->withJson($result);
+});
+
+$app->post("/getDocumentsSince", function ($request, $response, $args) {
+    $parsedBody = $request->getParsedBody();
+    $sql = "SELECT id, title, checksum FROM document WHERE UNIX_TIMESTAMP(created) > :created";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([':created' => $parsedBody['lastUpdate']]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $result = ['status' => 0, 'rows' => count($rows), 'result' => $rows ];
+    return $response->withJson($result);
+});
+
+$app->post("/getMediasSince", function ($request, $response, $args) {
+    $parsedBody = $request->getParsedBody();
+    $sql = "SELECT id, title, checksum FROM media WHERE UNIX_TIMESTAMP(created) > :created";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([':created' => $parsedBody['lastUpdate']]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $result = ['status' => 0, 'rows' => count($rows), 'result' => $rows ];
+    return $response->withJson($result);
+});
+
+
+$app->post("/getDocumentCategories", function ($request, $response, $args) {
+    $parsedBody = $request->getParsedBody();
+    $sql = "SELECT id, name FROM document_category WHERE UNIX_TIMESTAMP(created) > :created";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([':created' => $parsedBody['lastUpdate']]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $result = ['status' => 0, 'rows' => count($rows), 'result' => $rows ];
+    return $response->withJson($result);
+});
+
+$app->post("/getMediaCategories", function ($request, $response, $args) {
+    $parsedBody = $request->getParsedBody();
+    $sql = "SELECT id, name FROM media_category WHERE UNIX_TIMESTAMP(created) > :created";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([':created' => $parsedBody['lastUpdate']]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $result = ['status' => 0, 'rows' => count($rows), 'result' => $rows ];
+    return $response->withJson($result);
+});
+
+
+$app->post("/getImage", function ($request, $response, $args) {
+    $parsedBody = $request->getParsedBody();
+    $sql = "SELECT id, filename, title, checksum, TO_BASE64(content) AS content FROM photo WHERE id = :id ";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([':id' => $parsedBody['id']]);
+    $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+    $result = ['status' => 0, 'rows' => count($rows), 'result' => $rows ];
+    return $response->withJson($result);
+});
+
+$app->post("/getDocument", function ($request, $response, $args) {
+    $parsedBody = $request->getParsedBody();
+    $sql = "SELECT document.id, filename, title, checksum, TO_BASE64(content) AS content, "
+           ." document_category.name AS catname, country.name AS country_name  FROM document "
+           ." JOIN document_category ON document_category.id = document.document_category_id "
+           ." JOIN country ON country.id = document.country_id "
+           ." WHERE document.id = :id ";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([':id' => $parsedBody['id']]);
+    $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+    $result = ['status' => 0, 'rows' => count($rows), 'result' => $rows ];
+    return $response->withJson($result);
+});
+
+$app->post("/getMedia", function ($request, $response, $args) {
+    $parsedBody = $request->getParsedBody();
+    $sql = "SELECT media.id, filename, title, checksum, TO_BASE64(content) AS content, "
+        ." media_category.name AS catname FROM media "
+        ." JOIN media_category ON media_category.id = media.media_category_id "
+        ." WHERE media.id = :id ";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([':id' => $parsedBody['id']]);
+    $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+    $result = ['status' => 0, 'rows' => count($rows), 'result' => $rows ];
+    return $response->withJson($result);
+});
 
 
 $app->post('/documents', function ($request, $response, $args) {
@@ -163,7 +275,7 @@ $app->post('/documents', function ($request, $response, $args) {
 
 //media
 $app->get('/media', function ($request, $response, $args) {
-    $stmt = $this->pdo->prepare("SELECT dc.name AS category, d.filename, d.title, d.checksum "
+    $stmt = $this->pdo->prepare("SELECT d.id, dc.name AS category, d.filename, d.title, d.checksum "
         . "FROM media AS d "
         . "JOIN media_category AS dc ON dc.id = d.media_category_id ");
     $stmt->execute();
