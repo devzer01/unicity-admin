@@ -56,7 +56,7 @@ $app->post('/country', function ($request, $response, $args) {
 
 
 $app->get('/document-category', function ($request, $response, $args) {
-    $stmt = $this->pdo->prepare("SELECT * FROM document_category");
+    $stmt = $this->pdo->prepare("SELECT id, name, UNIX_TIMESTAMP(created) AS ts FROM document_category");
     $stmt->execute();
     $items = $stmt->fetchAll();
     $args = ['activeDocCat' => 'active'];
@@ -73,7 +73,7 @@ $app->post('/document-category', function ($request, $response, $args) {
 })->add($authCheck);
 
 $app->get('/media-category', function ($request, $response, $args) {
-    $stmt = $this->pdo->prepare("SELECT * FROM media_category");
+    $stmt = $this->pdo->prepare("SELECT id, name, UNIX_TIMESTAMP(created) AS ts FROM media_category");
     $stmt->execute();
     $items = $stmt->fetchAll();
     $args = ['activeMediaCat' => 'active'];
@@ -330,6 +330,20 @@ $app->get('/logout', function ($request, $response, $args) {
 $app->get('/changepass', function ($request, $response, $args) {
     return $this->view->render($response, 'changepass.twig.html', $args);
 })->setName('changepass')->add($authCheck);
+
+$app->get('/delete-document-category/{id}', function ($request, $response, $args) {
+    $id = $request->getAttribute('id');
+    $stmt = $this->pdo->prepare("DELETE FROM document_category WHERE id = :id ");
+    $stmt->execute([':id' => $id]);
+    return $response->withStatus(302)->withHeader('Location', '/document-category');
+})->add($authCheck);
+
+$app->get('/delete-media-category/{id}', function ($request, $response, $args) {
+    $id = $request->getAttribute('id');
+    $stmt = $this->pdo->prepare("DELETE FROM media_category WHERE id = :id ");
+    $stmt->execute([':id' => $id]);
+    return $response->withStatus(302)->withHeader('Location', '/media-category');
+})->add($authCheck);
 
 $app->post('/changepass', function ($request, $response, $args) {
     $pdo = $this->pdo;
