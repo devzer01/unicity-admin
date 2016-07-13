@@ -15,9 +15,9 @@
     <tr>
         <td>{{item.name}}</td>
         <td>
-            {if $item.ts neq 0}
+            {% if $item.ts neq 0 %}
             <a href="/delete-media-category/{{item.id}}">Delete</a>
-            {/if}
+            {% endif %}
         </td>
     </tr>
     {% endfor %}
